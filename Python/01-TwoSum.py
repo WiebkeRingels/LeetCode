@@ -5,50 +5,43 @@ class Solution(object):
         :type target: int
         :rtype: List[int]
         
-        ---------------------------------------------------------------
-        
-        approach:
-        
-        to keep the time complexity small, following equality is used:
-        
-        target = a + b (with a,b elements of nums)
-        <=> 0  = target - a - b
-        
-        first difference is computed with first loop
-        second difference is (indirectly) computed with second loop
-        
-        ---------------------------------------------------------------
-        
-        time complexity:
-        
-        first for loop: O(n)
-        - run through n elements ~ O(n)
-        - append function ~ O(1)
-        
-        second for loop: O(n)
-        - run through n elements -> O(n)
-        - index function ~ O(n)
-        
-        total: O(n) + O(n) = O(n)
-        
-        """
+		approach:
+		
+		use hash table to store numbers and their indices in the array
+		 
+		while filling the hash table, check if the difference to the
+		target number is already stored in the hash table
+		
+		if the difference is already in the hash table, there is a 
+		number x in nums[i] for that is true:
+		- target = diff + x
+		 
+		-----------------------------------------------------------------------
+		 
+		time complexity:
+		 
+		hash table storage ~ O(1)
+		loop through array ~ O(n)
+		total: O(1) + O(n) = O(n)
 
-        # compute difference for each number in nums to target
-        diffs = []
+        """
         
-        for n in nums:
-            diffs.append(target - n)
+        # create hash table (dictionary with pairs) that will store elements
+        # of nums with the corresponding index
+        hashTable = {}
+        
+        for ni,n in enumerate(nums):
+            diff = target - n
             
-        # since one solution exists, one of the computed differences 
-        # must be in the nums list as well
-        for di, d in enumerate(diffs):
-    
-            if diffs[di] in nums:
+            # if the difference is already in the hash table,
+			# there is a number x for that is true:
+			# - target = diff + x
+			# - (x,i_x) is in hash table
+            if str(diff) in hashTable:
+                return [hashTable[str(diff)], ni]
+            
+            # fill hash table until solution is found
+            hashTable[str(n)] = ni
         
-                i = di
-                j = nums.index(diffs[di])
-                
-                if i != j:
-                    break
-                
-        return [i,j]
+        # no solution
+        return []
